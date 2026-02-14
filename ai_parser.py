@@ -3,10 +3,8 @@ import json
 import re
 
 def extract_json(text):
-    # Remove markdown code blocks if present
     text = text.replace("```json", "").replace("```", "").strip()
 
-    # Match either a JSON list or a JSON object
     match = re.search(r'\[.*\]|\{.*\}', text, re.DOTALL)
     if match:
         try:
@@ -15,6 +13,7 @@ def extract_json(text):
             return {"error": "Invalid JSON"}
 
     return {"error": "No JSON found"}
+
 
 def parse_prompt(prompt):
 
@@ -30,24 +29,41 @@ Do not use backticks.
 Allowed actions:
 - open_app
 - search_web
+- open_url
+- create_file
+- create_folder
+- delete_file
 - move_file
+- list_files
+- create_project
 - shutdown
+- change_directory
+
 
 If the user gives multiple instructions,
 return a JSON list of actions.
 
 Examples:
 
-User: Open chrome
+User: Open notepad
 Response:
-{"action": "open_app", "app": "chrome"}
+{"action": "open_app", "app": "notepad"}
 
-User: Open chrome and search Linux firewall tutorial
+User: Create folder C:\\Users\\junej\\Desktop\\Test
 Response:
-[
-  {"action": "open_app", "app": "chrome"},
-  {"action": "search_web", "query": "Linux firewall tutorial"}
-]
+{"action": "create_folder", "path": "C:\\Users\\junej\\Desktop\\Test"}
+
+User: Delete file C:\\Users\\junej\\Desktop\\test.txt
+Response:
+{"action": "delete_file", "path": "C:\\Users\\junej\\Desktop\\test.txt"}
+
+User: Move file from C:\\Users\\junej\\Desktop\\a.txt to C:\\Users\\junej\\Desktop\\b.txt
+Response:
+{"action": "move_file", "source": "C:\\Users\\junej\\Desktop\\a.txt", "destination": "C:\\Users\\junej\\Desktop\\b.txt"}
+
+User: List files in C:\\Users\\junej\\Desktop
+Response:
+{"action": "list_files", "path": "C:\\Users\\junej\\Desktop"}
 """
 
     try:
